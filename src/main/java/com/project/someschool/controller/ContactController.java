@@ -13,6 +13,12 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
 public class ContactController {
@@ -53,6 +59,20 @@ public class ContactController {
         }
         contactService.saveMessageDetails(contact);
         return "redirect:/contact";
+    }
+
+    @RequestMapping("/displayMessages")
+    public ModelAndView displayMessages(Model model) {
+        List<Contact> contactMsgs = contactService.findMsgsWithOpenStatus();
+        ModelAndView modelAndView = new ModelAndView("messages.html");
+        modelAndView.addObject("contactMsgs",contactMsgs);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/closeMsg",method = GET)
+    public String closeMsg(@RequestParam int id) {
+        contactService.updateMsgStatus(id);
+        return "redirect:/displayMessages";
     }
 
 }

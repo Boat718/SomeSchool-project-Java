@@ -1,23 +1,44 @@
 package com.project.someschool.model;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
-@Data
-public class Holiday {
+import java.util.Objects;
 
-    private final String day;
-    private final String reason;
-    private final Type type;
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Entity
+@Table(name = "holidays")
+public class Holiday extends BaseEntity{
+
+    @Id
+    private String day;
+
+    private String reason;
+
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     public enum Type {
         FESTIVAL, FEDERAL
     }
 
-    public Holiday(String day, String reason, Type type) {
-        this.day = day;
-        this.reason = reason;
-        this.type = type;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Holiday holiday = (Holiday) o;
+        return day != null && Objects.equals(day, holiday.day);
     }
 
-
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
 }
