@@ -34,7 +34,7 @@ public class SomeSchoolUsernamePwdAuthenticationProvider implements Authenticati
         if( null != person && person.getPersonId()>0 &&
                 passwordEncoder.matches(pwd,person.getPwd())){
                     return new UsernamePasswordAuthenticationToken(
-                    person.getName(),null, getGrantedAuthorities(person.getRoles())
+                    email,null, getGrantedAuthorities(person.getRoles())
             );
         } else {
             throw new BadCredentialsException("Invalid Credentials");
