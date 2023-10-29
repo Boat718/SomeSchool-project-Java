@@ -1,6 +1,7 @@
 package com.project.someschool.service;
 
 
+import com.project.someschool.config.SomeSchoolProps;
 import com.project.someschool.constants.SomeSchoolConstants;
 import com.project.someschool.model.Contact;
 import com.project.someschool.repository.ContactRepository;
@@ -16,8 +17,14 @@ public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
+    @Autowired
+    SomeSchoolProps someSchoolProps;
+
     public Page<Contact> findMsgsWithOpenStatus(int pageNum, String sortField, String sortDir){
-        int pageSize = 5;
+        int pageSize = someSchoolProps.getPageSize();
+        if(null!=someSchoolProps.getContact() && null!=someSchoolProps.getContact().get("pageSize")){
+            pageSize = Integer.parseInt(someSchoolProps.getContact().get("pageSize").trim());
+        }
         org.springframework.data.domain.Pageable pageable =  PageRequest.of(pageNum-1, pageSize,
                 sortDir.equals("asc") ? Sort.by(sortField).ascending():
                 Sort.by(sortField).descending());
